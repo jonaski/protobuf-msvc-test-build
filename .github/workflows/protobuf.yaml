@@ -23,6 +23,13 @@ jobs:
        buildtype: [ release, debug ]
     steps:
 
+      - name: Install msvc runtime
+         if: env.buildtype == 'release'
+        shell: cmd
+        run: |
+          curl ${{env.curl_options}} https://aka.ms/vs/17/release/vc_redist.x64.exe
+          vc_redist.x64.exe /install /passive'
+
       - name: Set buildtype
         shell: bash
         run: echo "buildtype=$(echo ${{matrix.buildtype}} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
