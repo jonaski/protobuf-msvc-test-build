@@ -24,7 +24,7 @@ jobs:
     steps:
 
       - name: Install msvc runtime
-         if: env.buildtype == 'release'
+        if: env.buildtype == 'release'
         shell: cmd
         run: |
           curl ${{env.curl_options}} https://aka.ms/vs/17/release/vc_redist.x64.exe
