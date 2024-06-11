@@ -27,13 +27,6 @@ jobs:
         shell: bash
         run: echo "buildtype=$(echo ${{matrix.buildtype}} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
-      - name: Install msvc runtime
-        if: env.buildtype == 'release'
-        shell: cmd
-        run: |
-          curl ${{env.curl_options}} https://aka.ms/vs/17/release/vc_redist.x64.exe
-          vc_redist.x64.exe /install /passive
-
       - name: Set cmake and meson buildtype
         shell: bash
         run: |
@@ -180,6 +173,7 @@ jobs:
           CL: "/MP"
           PKG_CONFIG_EXECUTABLE: ${{env.prefix_path_backslash}}\bin\pkgconf.exe
           PKG_CONFIG_PATH: ${{env.prefix_path_backslash}}\lib\pkgconfig
+          CXXFLAGS: '/D_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR'
         working-directory: build/abseil-cpp-${{env.abseil_cpp_version}}
         run: cmake --log-level="${{env.cmake_loglevel}}" -S . -B build -G "NMake Makefiles" -DCMAKE_BUILD_TYPE="${{env.cmake_buildtype}}" -DCMAKE_INSTALL_PREFIX="${{env.prefix_path_backslash}}" -DBUILD_SHARED_LIBS=ON
 
@@ -209,6 +203,7 @@ jobs:
           CL: "/MP"
           PKG_CONFIG_EXECUTABLE: ${{env.prefix_path_backslash}}\bin\pkgconf.exe
           PKG_CONFIG_PATH: ${{env.prefix_path_backslash}}\lib\pkgconfig
+          CXXFLAGS: '/D_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR'
         working-directory: build/protobuf-${{env.protobuf_version}}
         run: cmake --log-level="${{env.cmake_loglevel}}" -S . -B build -G "NMake Makefiles" -DCMAKE_BUILD_TYPE="${{env.cmake_buildtype}}" -DCMAKE_INSTALL_PREFIX="${{env.prefix_path_backslash}}" -DBUILD_SHARED_LIBS=ON -Dprotobuf_BUILD_SHARED_LIBS=ON -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_BUILD_EXAMPLES=OFF -Dprotobuf_BUILD_PROTOC_BINARIES=ON -Dprotobuf_WITH_ZLIB=ON -Dprotobuf_ABSL_PROVIDER="package"
 
